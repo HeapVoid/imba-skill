@@ -1,0 +1,26 @@
+{
+  "skill_name": "imba",
+  "evals": [
+    {
+      "id": 0,
+      "name": "translate-react-form-to-imba",
+      "prompt": "Translate this React component to Imba. It's for a project that uses Imba 2 with the bimba CLI. Just give me the .imba file contents — I'll save it myself.\n\n```jsx\nimport { useState, useEffect } from 'react'\n\nexport function LoginForm({ onLogin }) {\n  const [email, setEmail] = useState('')\n  const [password, setPassword] = useState('')\n  const [error, setError] = useState(null)\n\n  useEffect(() => {\n    document.title = 'Login'\n  }, [])\n\n  const valid = email.includes('@') && password.length >= 6\n\n  const submit = async (e) => {\n    e.preventDefault()\n    try {\n      await onLogin({ email, password })\n    } catch (err) {\n      setError(err.message)\n    }\n  }\n\n  return (\n    <form onSubmit={submit}>\n      <input type=\"email\" value={email} onChange={e => setEmail(e.target.value)} />\n      <input type=\"password\" value={password} onChange={e => setPassword(e.target.value)} />\n      {error && <div className=\"err\">{error}</div>}\n      <button disabled={!valid}>Sign in</button>\n    </form>\n  )\n}\n```",
+      "expected_output": "Idiomatic Imba: tag-based component with bind=, no arrow functions, no closing tags, getter for `valid`, disabled=!valid, def mount for title, tabs indentation.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "name": "write-todo-list-component",
+      "prompt": "I'm building a todo list in Imba. Write me a single-file `tag todo-app` component that: stores a list of todos (each is `{text, done}`), has an input field bound to a `draft` field, an add button that pushes the draft into the list and clears it, renders each todo with a checkbox bound to `done`, lets you click a todo to toggle done, and shows '0 of N done' at the top. Style it minimally with `css self`. Use idiomatic Imba — I'll be reading this code as a learning example so it should look like good Imba, not transpiled JS.",
+      "expected_output": "Single .imba file with tag todo-app, bind= on input and checkbox, kebab-case tag name, css self block, no arrow functions, no closing tags, indentation with tabs, idiomatic naming.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "fix-broken-imba-file",
+      "prompt": "This Imba file won't compile. Fix it and explain each fix briefly. The user is annoyed because the error messages aren't helping.\n\n```imba\nimport { api } from './api'\n\ntag counter\n    prop count = 0\n    prop step = 1\n\n    def increment\n        count = count + step\n\n    def render\n        <self>\n            <div [bgc: count > 5 ? 'red' : 'blue']>\n                <span> \"Count: {count}\"\n                </span>\n            </div>\n            <button @click=(e) => increment()> \"+\"\n            <ul>\n                for n in [1..count]\n                    <li> \"item {n}\"\n            </ul>\n```",
+      "expected_output": "Fixed file uses tabs, no `prop`, no closing tags, no `=>` (use `do` or method ref), `[1 .. count]` with spaces, `[bgc: {…}]` wrapping the ternary, `.imba` extension on import, no `def render` (Imba autorenders). Brief explanation per fix.",
+      "files": []
+    }
+  ]
+}
