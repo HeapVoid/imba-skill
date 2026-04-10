@@ -258,6 +258,7 @@ Full breakdown in `references/style-guide.md` § "The core principle".
 | `imba.locals` / `imba.session` (local/session storage) | `references/storage.md` |
 | `@touch` events, drag, gestures, pointer | `references/touch.md` |
 | Bun runtime / `bimba` CLI | `references/bun.md` |
+| Router: `route`, `route-to`, `def routed`, dynamic segments, nested routes, manual URL sync | `references/router.md` |
 | PocketBase backend hooks | `references/pocketbase.md` |
 | Claude Code plugin in VS Code | `references/vscode.md` |
 | **Compile/runtime errors — quick fix table** | `references/troubleshooting.md` |

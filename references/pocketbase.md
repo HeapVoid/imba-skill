@@ -10,6 +10,35 @@ Backend hooks for PocketBase written in Imba (chain: Imba → JS → Goja runtim
 
 ## Критичные правила Goja
 
+### File scope в `.pb.js` — callback-ы `routerAdd` изолированы
+
+PocketBase 0.36+ выполняет каждый `routerAdd` callback в **изолированном Goja-контексте**. Переменные и функции, объявленные на уровне файла в `.pb.imba` (хук-файлах), **не видны** внутри callback-ов `routerAdd`.
+
+Это касается **только файлов с хуками** (`.pb.imba` → `.pb.js`). В обычных модулях (например, `utils.imba` → `utils.js`) функции на уровне файла работают нормально, видят друг друга и корректно экспортируются через `module.exports`.
+
+**Решение:** выносить shared-хелперы в `utils.imba` (или другой модуль), экспортировать через `module.exports`, и импортировать через `require()` внутри каждого callback-а.
+
+```imba
+# ✅ utils.imba — обычный модуль, file-scope работает
+const isProjectMember = do(projectId, userId)
+	# ... может вызывать другие функции из этого же файла
+	return rows.length > 0
+
+module.exports = { isProjectMember }
+
+# ✅ api.chats.pb.imba — хелперы через require внутри callback
+routerAdd "GET", "/projects/{projectId}/chats", do(e)
+	const { auth, isProjectMember } = require("{__hooks}/utils.js")
+	const { request } = auth(e)
+	# ...
+
+# ❌ api.chats.pb.imba — file-scope НЕ видна внутри routerAdd
+const isProjectMember = do(projectId, userId)
+	# ...
+routerAdd "GET", "/projects/{projectId}/chats", do(e)
+	isProjectMember(projectId, userId) # ReferenceError: isProjectMember is not defined
+```
+
 ### `require` — только внутри функций
 
 ```imba
