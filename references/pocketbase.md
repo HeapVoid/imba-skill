@@ -235,6 +235,51 @@ routerAdd "GET", "/api/foo", do(e)
 	const request = e.requestInfo!
 	const query = request.method == "GET" ? request.query : request.body
 	return e.json(200, { ok: true })
+```
+
+### HTTP-заголовки в `requestInfo()`
+
+PocketBase (Goja) **заменяет дефисы на подчёркивания** в ключах заголовков и приводит всё к **нижнему регистру**:
+
+| Отправлен заголовок | Ключ в `request.headers` |
+|---------------------|--------------------------|
+| `x-agent-token` | `x_agent_token` |
+| `Content-Type` | `content_type` |
+| `X-Custom-Header` | `x_custom_header` |
+
+```imba
+routerAdd "POST", "/my-webhook", do(e)
+	const request = e.requestInfo!
+	const token = request.headers['x_agent_token']   # ✅ подчёркивания, lowercase
+	# const token = request.headers['x-agent-token'] # ❌ НЕ работает — дефисы
+	# const token = request.headers['X-Agent-Token'] # ❌ НЕ работает — Go canonical
+```
+
+**Запомни:** `request.headers` — это НЕ стандартный HTTP map. PocketBase нормализует ключи перед передачей в Goja.
+
+### JSON-поля (`record.get()` и `JSON.stringify`)
+
+JSON-поля в PocketBase храня��ся как `types.JsonRaw` (Go byte slice). При передаче в Goja `record.get("jsonField")` возвращает **byte slice**, а не JS-объект. Когда ты кладёшь его в объект и вызываешь `JSON.stringify()`, получается **массив байтов** `[123, 34, ...]` вместо объекта.
+
+```imba
+# ❌ НЕПРАВИЛЬНО — config будет [123, 34, 99, ...] (byte array)
+body: JSON.stringify({
+	config: agent.get("config") or {}
+})
+
+# ✅ ПРАВИЛЬНО — парсить через String() + JSON.parse()
+let agentConfig = {}
+const rawCfg = agent.get("config")
+if rawCfg
+	try agentConfig = JSON.parse(String(rawCfg))
+body: JSON.stringify({
+	config: agentConfig
+})
+```
+
+**Правило:** всегда оборачивай `record.get("jsonField")` в `JSON.parse(String(...))` перед вставкой в другой JSON-объект.
+
+```imba
 
 onRecordCreateRequest do(e)
 	e.next!
