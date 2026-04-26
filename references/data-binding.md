@@ -117,10 +117,11 @@ let options = ['React','Vue','Imba','Svelte','Ember']
 let interests = []
 
 <self>
-	<div> for option in options
-		<label[mr:2]>
-			<input type='checkbox' bind=interests value=option/>
-			<span[pl:1]> option
+	<div>
+		for option in options
+			<label[mr:2]>
+				<input type='checkbox' bind=interests value=option/>
+				<span[pl:1]> option
 	<label> "Interested in {interests.join(', ')}"
 ```
 
@@ -137,10 +138,11 @@ let options = ['React','Vue','Imba','Svelte','Ember']
 let interest = 'Imba'
 
 <self>
-	<div> for option in options
-		<label[mr:2]>
-			<input type='radio' bind=interest value=option/>
-			<span[pl:1]> option
+	<div>
+		for option in options
+			<label[mr:2]>
+				<input type='radio' bind=interest value=option/>
+				<span[pl:1]> option
 	<label> "Interested in {interest}"
 ```
 
@@ -153,8 +155,9 @@ let options = ['React','Vue','Imba','Svelte','Ember']
 let focus = 'Imba'
 
 <self>
-	<select bind=focus> for item in options
-		<option value=item> item
+	<select bind=focus>
+		for item in options
+			<option value=item> item
 	<label> "Focused on {focus}"
 ```
 
@@ -165,11 +168,13 @@ let projects = [{name: 'Project A', color: 'blue'}, ...]
 let choices = []
 
 <self>
-	<select multiple bind=choices> for item in projects
-		<option value=item> item.name
+	<select multiple bind=choices>
+		for item in projects
+			<option value=item> item.name
 	<label> "Selected:"
-	<div> for item in choices
-		<div[color:{item.color}]> item.name
+	<div>
+		for item in choices
+			<div[color:{item.color}]> item.name
 ```
 
 ---
@@ -243,17 +248,19 @@ def addInterest e
 	person.interests.push e.target.value
 	e.target.value = ''
 
-<self>
-	<header>
-		<select bind=person> for item in people
-			<option value=item> item.name
-		<button[ml:2] @click=addPerson> 'Add'
-	<article>
-		<label[ta:left]> "Editing {person.name}:"
-		<input bind=person.name placeholder="Name...">
-		<input placeholder="Add interest..." @keyup.enter.prevent=addInterest>
-		<div.tags> for item in person.interests
-			<button[mr:1].chip bind=person.interests value=item> item
+	<self>
+		<header>
+			<select bind=person>
+				for item in people
+					<option value=item> item.name
+			<button[ml:2] @click=addPerson> 'Add'
+		<article>
+			<label[ta:left]> "Editing {person.name}:"
+			<input bind=person.name placeholder="Name...">
+			<input placeholder="Add interest..." @keyup.enter.prevent=addInterest>
+			<div.tags>
+				for item in person.interests
+					<button[mr:1].chip bind=person.interests value=item> item
 ```
 
 ---

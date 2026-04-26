@@ -74,8 +74,9 @@ let array = ["First","Second"]
 
 let view = <main>
 	<button @click=array.push('More')> 'Add'
-	<ul> for item in array
-		<li> item
+	<ul>
+		for item in array
+			<li> item
 
 # ❌ Clicking "Add" pushes to array, but view does NOT update
 document.body.appendChild view
@@ -89,8 +90,9 @@ let array = ["First","Second"]
 imba.mount do
 	<main>
 		<button @click=array.push('More')> 'Add'
-		<ul> for item in array
-			<li> item
+		<ul>
+			for item in array
+				<li> item
 # ✅ View updates on every click
 ```
 
